@@ -15,6 +15,8 @@ public class Particle {
     private State previousState;
     private State currentState;
     private State futureState;
+    double desiredVelocity;
+    Vector2D desiredTarget;
 
     public Particle(double radius, double mass) {
         this.id = serial_id++;
@@ -54,13 +56,15 @@ public class Particle {
         this.mass = Double.POSITIVE_INFINITY;
     }
 
-    public Particle(double radius, double mass, double x, double y, double vx, double vy,double dt) {
+    public Particle(double radius, double mass, double x, double y, double vx, double vy,double dt,double desiredVelocity, Vector2D desiredTarget) {
         this.id = serial_id++;
         this.radius = radius;
         this.mass = mass;
         currentState = new State(x, y, vx, vy, 0, 0, 0);
         double prevX = x - vx * dt;
         double prevY = y - vy * dt;
+        this.desiredTarget = desiredTarget;
+        this.desiredVelocity = desiredVelocity;
         previousState = new State(prevX, prevY, vx, vy, 0, 0, 0);
     }
 
@@ -187,5 +191,13 @@ public class Particle {
         }while (!input.noOverlapParticle(x,y,radius));  //NO NEED TO CHECK WALLS?
         State newState = new State(x,y,0,0);
         currentState = previousState = newState;
+    }
+
+    public double getDesiredVelocity() {
+        return desiredVelocity;
+    }
+
+    public Vector2D getDesiredTarget() {
+        return desiredTarget;
     }
 }

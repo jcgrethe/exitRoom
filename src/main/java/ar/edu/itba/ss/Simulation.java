@@ -1,5 +1,6 @@
 package ar.edu.itba.ss;
 
+import ar.edu.itba.ss.GranularMedia.GranularMediaForce;
 import ar.edu.itba.ss.Integrators.*;
 import ar.edu.itba.ss.io.Input;
 import ar.edu.itba.ss.io.Output;
@@ -15,10 +16,9 @@ import org.apache.commons.cli.*;
 public class Simulation
 {
 
-    static long PARTICLES = 150;
+    static long PARTICLES = 300;
     static int caudal = 0;
-    private static double Kn = 1E5;
-    private static double Kt = 2d*Kn;
+
 
     public static void main( String[] args ) {
         Output.generateVelocityStatistics();
@@ -30,77 +30,70 @@ public class Simulation
     public static void simulation1(String[] args){
         // Initial conditions
         //Double simulationDT = 0.1*Math.sqrt(input.getMass()/input.getKn());   //Default ; TODO: Check if there is a better one
-        double simulationDT = 5E-5;
+        double simulationDT = 1E-5;
         CommandLine cmd = getOptions(args);
-        double d = 0.15;
-        if(cmd.getOptionValue('d') != null){
-            d = Double.parseDouble(cmd.getOptionValue('d'));
-        }
-        if(cmd.getOptionValue("kt") != null){
-            Kt = Double.parseDouble(cmd.getOptionValue("kt"));
-        }
 
-        if(cmd.getOptionValue("kn") != null){
-            Kn = Double.parseDouble(cmd.getOptionValue("kn"));
+        if(cmd.getOptionValue("n") != null){
+            PARTICLES = Long.parseLong(cmd.getOptionValue("n"));
         }
 
 
-        Input input = new Input(PARTICLES, simulationDT,d,Kt, Kn);
-        Integer printDT = 500;
+        Input input = new Input(PARTICLES, simulationDT);
+        Integer printDT = 1000;
         Integer iteration = 0;
         System.out.println("DT: "+input.getDt() + " | Print DT: " + printDT);
-//        Integrator integrator = new VelocityVerlet(simulationDT,
-//                new GranularMediaForce(input.getKn(), input.getKt(), input.getW(), input.getL()),
-//                input.getW(), input.getL(), input.getD()
-//        );
-//        // Can use other integrator.
-//        List<Particle> particles = input.getParticles();
-//        Output.generateXYZFile();
-//
-//        //Simulation
-//        Grid grid = new Grid(input.getCellSideLength(),input.getW(), input.getL());
-//        for (double time = 0d ; time < input.getEndTime() ; time += simulationDT, iteration++){
-//            grid.setParticles(input.getParticles());
-////            integrator.moveParticle();
-//            Map<Particle, List<Particle>> neighbours = NeighborDetection.getNeighbours(
-//                    grid, grid.getUsedCells(),
-//                    input.getInteractionRadio(), false
-//            );
-//            particles.stream().parallel().forEach( particle -> {
-//                integrator.moveParticle(
-//                        particle, simulationDT,
-//                        neighbours.getOrDefault(particle,new LinkedList<>()),
-//                        getWallsCollisions(particle, input.getW(), input.getL(), input.getD())
-//                );
-//            });
-//
-//            final double auxtime=time;
-//
-//            particles.stream().parallel().forEach(particle -> {
-//                particle.updateState();
-//                if (particle.getY() < -input.getL()/10){
-//                    //Vertical Contorn Condition
-//                    try {
-//                        updateCaudal(input,auxtime);
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                    particle.reset(input);  //TODO: Same velocity and X position?
-//                }
-//            });
-//
-//            if (iteration % printDT == 0){ //TODO CHECK!!
-//                //Print
-//                try {
-//                    System.out.println(time);
-//                    Output.printToFile(particles);
-//                    Output.printEnergy(input.getParticles(),time);
-//                }catch (IOException e){
-//                    System.out.println(e.getMessage());
-//                }
-//            }
-//            grid.clean();
-//        }
+        Integrator integrator = new VelocityVerlet(simulationDT,
+                new GranularMediaForce(input.getKn(), input.getKt(), input.getW(), input.getL()),
+                input.getW(), input.getL(), input.getD()
+        );
+        // Can use other integrator.
+        List<Particle> particles = input.getParticles();
+        Output.generateXYZFile();
+
+        //Simulation
+        Grid grid = new Grid(input.getCellSideLength(),input.getW(), input.getL());
+        for (double time = 0d ; time < input.getEndTime() ; time += simulationDT, iteration++){
+            grid.setParticles(input.getParticles());
+//            integrator.moveParticle();
+            Map<Particle, List<Particle>> neighbours = NeighborDetection.getNeighbours(
+                    grid, grid.getUsedCells(),
+                    input.getInteractionRadio(), false
+            );
+            particles.stream().parallel().forEach( particle -> {
+                integrator.moveParticle(
+                        particle, simulationDT,
+                        neighbours.getOrDefault(particle,new LinkedList<>()),
+                        getWallsCollisions(particle, input.getW(), input.getL(), input.getD())
+                );
+            });
+
+            final double auxtime=time;
+
+            particles.stream().parallel().forEach(particle -> {
+                particle.updateState();
+                if (particle.getY() < -input.getL()/10){
+                    //Vertical Contorn Condition
+                    try {
+                        updateCaudal(input,auxtime);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    particle.reset(input);  //TODO: Same velocity and X position?
+                }
+            });
+
+            if (iteration % printDT == 0){ //TODO CHECK!!
+                //Print
+                try {
+                    System.out.println(time);
+                    Output.printToFile(particles);
+                    Output.printEnergy(input.getParticles(),time);
+                }catch (IOException e){
+                    System.out.println(e.getMessage());
+                }
+            }
+            grid.clean();
+        }
     }
 
     private static void updateCaudal(Input input, double time) throws IOException {
@@ -115,7 +108,7 @@ public class Simulation
             walls.add(new Wall(Wall.typeOfWall.LEFT));
         if (boxWidth - p.getX() < p.getRadius())
             walls.add(new Wall(Wall.typeOfWall.RIGHT));
-        if (p.getY() < p.getRadius() && p.getY()>0)
+        if ((p.getY()-3) < p.getRadius() && p.getY()>3)
             if(p.getX() < boxWidth / 2 - D / 2  || p.getX() > boxWidth / 2 + D / 2 ) // apertura
                 walls.add(new Wall(Wall.typeOfWall.BOTTOM));
         return walls;
@@ -138,6 +131,11 @@ public class Simulation
         Option other = new Option("kn", "kn", true, "kn");
         other.setRequired(false);
         options.addOption(other);
+
+        Option p = new Option("n", "n", true, "n");
+        p.setRequired(false);
+        options.addOption(p);
+
 
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();

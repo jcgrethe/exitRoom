@@ -1,5 +1,6 @@
 package ar.edu.itba.ss.Integrators;
 
+import ar.edu.itba.ss.GranularMedia.GranularMediaForce;
 import ar.edu.itba.ss.Simulation;
 import ar.edu.itba.ss.models.*;
 
