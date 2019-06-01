@@ -1,6 +1,7 @@
 package ar.edu.itba.ss;
 
 import ar.edu.itba.ss.GranularMedia.GranularMediaForce;
+import ar.edu.itba.ss.Forces.ExitRoomForce;
 import ar.edu.itba.ss.Integrators.*;
 import ar.edu.itba.ss.io.Input;
 import ar.edu.itba.ss.io.Output;
@@ -22,12 +23,12 @@ public class Simulation
 
     public static void main( String[] args ) {
         Output.generateVelocityStatistics();
-        simulation1(args);
+        simulate(args);
         // Output
 
     }
 
-    public static void simulation1(String[] args){
+    public static void simulate(String[] args){
         // Initial conditions
         //Double simulationDT = 0.1*Math.sqrt(input.getMass()/input.getKn());   //Default ; TODO: Check if there is a better one
         double simulationDT = 1E-5;
@@ -40,6 +41,8 @@ public class Simulation
 
         Input input = new Input(PARTICLES, simulationDT);
         Integer printDT = 1000;
+
+
         Integer iteration = 0;
         System.out.println("DT: "+input.getDt() + " | Print DT: " + printDT);
         Integrator integrator = new VelocityVerlet(simulationDT,
