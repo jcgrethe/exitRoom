@@ -41,9 +41,8 @@ public class GranularMediaForce  implements ForceFunction {
             xDistanceFraction = (neighbour.getX() - particle.getX())/distance;
             yDistanceFraction = (neighbour.getY() - particle.getY())/distance;
             overlapSize = overlapSize(particle, neighbour); //mirar esto
-            if (overlapSize>0) {
+            if (overlapSize > 0) {
                 Vector2D normalVector = new Vector2D(yDistanceFraction, -xDistanceFraction); //TODO Check '-'
-                if (overlapSize < 0) continue; // Not colliding
                 double relativeVelocity = getRelativeVelocity(particle, neighbour, normalVector);
                 double normalForceValue = -Kn * overlapSize;
                 double tangencialForceValue = -Kt * overlapSize * relativeVelocity;
@@ -53,7 +52,6 @@ public class GranularMediaForce  implements ForceFunction {
             /*            if(Math.abs(forceX)>15 || Math.abs(forceY)>15)
                 System.out.println("error1");*/
             }
-
             //social
             double socialForceValue = A * Math.exp(overlapSize / B);
             forceX += socialForceValue * xDistanceFraction;
@@ -91,11 +89,6 @@ public class GranularMediaForce  implements ForceFunction {
     }
 
 
-    private static int g(Particle p, Particle other) {
-        double ol = overlapSize(p, other);
-        return (ol < 0)? 1 : 0;
-    }
-
 
 
     private Vector2D getNormalAndTangencialVector(double overlapSize, double relativeVelocity){
@@ -124,7 +117,7 @@ public class GranularMediaForce  implements ForceFunction {
             case RIGHT:
                 return p.getRadius() - boxWidth + p.getX();
             case BOTTOM:
-                return p.getRadius() - p.getY();
+                return p.getRadius() - p.getY() + 3;
             case LEFT:
                 return p.getRadius() - p.getX();
         }
@@ -160,21 +153,21 @@ public class GranularMediaForce  implements ForceFunction {
             case TOP: // normal [0,1] ; tan [1,0]
                 return force.add(
                         normalAndTan.getY(),    // Only tan
-                        normalAndTan.getX() + socialForceValue    // Only normal
+                        normalAndTan.getX() //+ socialForceValue    // Only normal
                 );
             case RIGHT: // normal [1,0] ; tan [0,-1]
                 return force.add(
-                    normalAndTan.getX() + socialForceValue,
+                    normalAndTan.getX(), //+ socialForceValue,
                     -normalAndTan.getY()
                 );
             case BOTTOM: // normal [0,-1] ; tan [-1,0]
                 return force.add(
-                    -normalAndTan.getY() ,
-                    -normalAndTan.getX() - socialForceValue
+                    -normalAndTan.getY(),
+                    -normalAndTan.getX() // - socialForceValue
                 );
             case LEFT: // normal [-1,0] ; tan [0,1]
                 return force.add(
-                    -normalAndTan.getX() - socialForceValue,
+                    -normalAndTan.getX(), // - socialForceValue,
                     normalAndTan.getY()
                 );
         }

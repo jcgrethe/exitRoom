@@ -23,7 +23,7 @@ public class Input {
     private double Kn= 1.2E5;
     private double Kt = 2.4E5;
     private final double y = 70d;
-    private final double mass = 50;
+    private final double mass = 10;
     private double endTime = 10.0;
     private double dt;
     private double cellSideLength;
@@ -32,7 +32,7 @@ public class Input {
     private double totalTries = 1E6;    //TODO: Not too much?
     private double tries = 0;
 
-    private static double MAXDESIREDVELOCITY =  6.0;
+    private static double MAXDESIREDVELOCITY =  2.0;
     private static double MINDESIREDVELOCITY =  0.8;
 
 

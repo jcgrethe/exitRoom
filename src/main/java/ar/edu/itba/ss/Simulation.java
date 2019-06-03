@@ -17,7 +17,7 @@ import org.apache.commons.cli.*;
 public class Simulation
 {
 
-    static long PARTICLES = 300;
+    static long PARTICLES = 100;
     static int caudal = 0;
 
 
@@ -31,7 +31,7 @@ public class Simulation
     public static void simulate(String[] args){
         // Initial conditions
         //Double simulationDT = 0.1*Math.sqrt(input.getMass()/input.getKn());   //Default ; TODO: Check if there is a better one
-        double simulationDT = 1E-5;
+        double simulationDT = 5E-5;
         CommandLine cmd = getOptions(args);
 
         if(cmd.getOptionValue("n") != null){
