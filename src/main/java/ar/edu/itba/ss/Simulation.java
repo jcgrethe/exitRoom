@@ -17,7 +17,7 @@ import org.apache.commons.cli.*;
 public class Simulation
 {
 
-    static long PARTICLES = 100;
+    static long PARTICLES = 200;
     static int caudal = 0;
 
 

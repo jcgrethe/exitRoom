@@ -75,19 +75,21 @@ public class GranularMediaForce  implements ForceFunction {
             System.out.println("error2");*/
 
         // Driving Force
-//        Vector2D aux;
-//        Vector2D drivingForceValue;
-//        if(particle.getY() < 3)
-//            aux = particle.getDesiredTarget().subtract(particle.getPosition());
-//        else
-//            aux = exitTarget.subtract(particle.getPosition());
-//        aux = aux.multiply(1/aux.getModule());
-//        drivingForceValue = particle.getVelocity().subtract(aux.multiply(particle.getDesiredVelocity()));
-//        drivingForceValue = drivingForceValue.multiply(particle.getMass()/0.5);
-//
-//        return new Vector2D(force.getX()+drivingForceValue.getX(),force.getY()+drivingForceValue.getY());
+        Vector2D directionVersor;
+        Vector2D drivingForceValue;
 
-        return force;
+        if(particle.getY() < 3)
+            directionVersor = particle.getPosition().subtract(particle.getDesiredTarget());
+        else
+            directionVersor = particle.getPosition().subtract(exitTarget);
+        directionVersor = directionVersor.multiply(1/directionVersor.getModule());
+
+        drivingForceValue = directionVersor.multiply(particle.getDesiredVelocity()).subtract(particle.getVelocity());
+        drivingForceValue = drivingForceValue.multiply(particle.getMass()/0.5);
+
+        return new Vector2D(force.getX()+drivingForceValue.getX(),force.getY()+drivingForceValue.getY());
+
+//        return force;
     }
 
 

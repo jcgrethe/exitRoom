@@ -82,7 +82,7 @@ public class Input {
     public boolean noOverlapParticle(Double x, Double y, Double radio){
         if (particles.size() == 0) return true;
         for (Particle particle : particles){
-                if ( (Math.pow(particle.getX() - x, 2) + Math.pow(particle.getY() - y, 2)) <= Math.pow(particle.getRadius() + radio, 2)){
+                if ( (Math.pow(particle.getX() - x, 2) + Math.pow(particle.getY() - y, 2)) <= Math.pow(particle.getRadius() + radio + interactionRadio, 2)){
                     return false;
             }
         }
