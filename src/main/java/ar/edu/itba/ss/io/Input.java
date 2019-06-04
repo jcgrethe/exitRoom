@@ -27,7 +27,7 @@ public class Input {
     private double endTime = 10.0;
     private double dt;
     private double cellSideLength;
-    private double interactionRadio = 0.2;
+    private double interactionRadio = 0.05;
 
     private double totalTries = 1E6;    //TODO: Not too much?
     private double tries = 0;

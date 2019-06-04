@@ -69,6 +69,7 @@ public class GranularMediaForce  implements ForceFunction {
                 Vector2D forceNormalAndTan = getNormalAndTangencialVector(overlapSize, relativeVelocity);
                 force = addForceFromWall(force, wall, forceNormalAndTan, overlapSize);
             }
+            force = addSocialForceFromWall(force, wall, overlapSize, boxWidth);
         }
 
 /*        if(Math.abs(force.getX())>15 || Math.abs(force.getY())>15)
@@ -152,13 +153,7 @@ public class GranularMediaForce  implements ForceFunction {
     }
 
     private Vector2D addForceFromWall(Vector2D force, Wall wall, Vector2D normalAndTan, double overlapSize){
-        double socialForceValue = A * Math.exp( overlapSize / B);
         switch (wall.getTypeOfWall()){
-            case TOP: // normal [0,1] ; tan [1,0]
-                return force.add(
-                        normalAndTan.getY(),    // Only tan
-                        normalAndTan.getX() //+ socialForceValue    // Only normal
-                );
             case RIGHT: // normal [1,0] ; tan [0,-1]
                 return force.add(
                     normalAndTan.getX(), //+ socialForceValue,
@@ -173,6 +168,28 @@ public class GranularMediaForce  implements ForceFunction {
                 return force.add(
                     -normalAndTan.getX(), // - socialForceValue,
                     normalAndTan.getY()
+                );
+        }
+        return force;
+    }
+
+    private Vector2D addSocialForceFromWall(Vector2D force, Wall wall, double overlapSize, double boxWidth){
+        double socialForceValue = A * Math.exp( overlapSize / B);
+        switch (wall.getTypeOfWall()){
+            case RIGHT:
+                return force.add(
+                        -1d*socialForceValue,
+                        0d
+                );
+            case BOTTOM:
+                return force.add(
+                        0d,
+                        1d*socialForceValue
+                );
+            case LEFT:
+                return force.add(
+                        1d*socialForceValue,
+                        0d
                 );
         }
         return force;
