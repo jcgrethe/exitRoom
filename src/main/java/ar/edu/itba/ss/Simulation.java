@@ -18,6 +18,7 @@ public class Simulation
 
     static long PARTICLES = 200;
     static int caudal = 0;
+    private static double interactionRadio = 0d;
 
 
     public static void main( String[] args ) {
@@ -39,6 +40,7 @@ public class Simulation
 
 
         Input input = new Input(PARTICLES, simulationDT);
+        interactionRadio = input.getInteractionRadio();
         Integer printDT = 1000;
 
 
@@ -106,16 +108,15 @@ public class Simulation
 
     public static List<Wall> getWallsCollisions(Particle p, Double boxWidth, Double boxHeight, Double D){
         List<Wall> walls = new LinkedList<>();
-        if (p.getX() < p.getRadius())
+        if (p.getX() < (p.getRadius() + interactionRadio))
             walls.add(new Wall(Wall.typeOfWall.LEFT));
-        if (boxWidth - p.getX() < p.getRadius())
+        if (boxWidth - p.getX() < (p.getRadius() + interactionRadio))
             walls.add(new Wall(Wall.typeOfWall.RIGHT));
-        if ((p.getY()-3) < p.getRadius() && p.getY()>3)
+        if ((p.getY()-3) < (p.getRadius() + interactionRadio) && p.getY()>3)
             if(p.getX() < boxWidth / 2 - D / 2  || p.getX() > boxWidth / 2 + D / 2 ) // apertura
                 walls.add(new Wall(Wall.typeOfWall.BOTTOM));
         return walls;
     }
-
 
     private static CommandLine getOptions(String[] args){
 
