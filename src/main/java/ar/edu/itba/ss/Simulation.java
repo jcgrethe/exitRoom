@@ -1,7 +1,6 @@
 package ar.edu.itba.ss;
 
 import ar.edu.itba.ss.GranularMedia.GranularMediaForce;
-import ar.edu.itba.ss.Forces.ExitRoomForce;
 import ar.edu.itba.ss.Integrators.*;
 import ar.edu.itba.ss.io.Input;
 import ar.edu.itba.ss.io.Output;

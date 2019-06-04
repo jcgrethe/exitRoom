@@ -125,10 +125,6 @@ public class Input {
         return D;
     }
 
-    public static double getGravity() {
-        return gravity;
-    }
-
     public double getDt() {
         return dt;
     }
