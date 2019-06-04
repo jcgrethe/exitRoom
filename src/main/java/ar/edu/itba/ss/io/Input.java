@@ -16,8 +16,6 @@ public class Input {
     private double L=20;
     private double W=20;
     private double D=1.2;
-    private static final double gravity = 9.8;
-    private final boolean contornConditions = true; //Defined; Only on after the opening
     private final double minRadio = 0.5/2;
     private final double maxRadio = 0.58/2;
     private double Kn= 1.2E5;
@@ -25,14 +23,13 @@ public class Input {
     private final double y = 70d;
     private final double mass = 10;
     private double endTime = 10.0;
-    private double dt;
     private double cellSideLength;
     private double interactionRadio = 0.05;
 
     private double totalTries = 1E6;    //TODO: Not too much?
     private double tries = 0;
 
-    private static double MAXDESIREDVELOCITY =  2.0;
+    private static double MAXDESIREDVELOCITY =  6.0;
     private static double MINDESIREDVELOCITY =  0.8;
 
 
@@ -58,7 +55,6 @@ public class Input {
         while(tries < totalTries && particles.size() < quantity ) {
             double radius = random.nextDouble(minRadio,maxRadio);
             double desiredVelocity = - random.nextDouble(MINDESIREDVELOCITY,MAXDESIREDVELOCITY);
-            Vector2D desiredTarget = new Vector2D( radius + Math.random() * (W - radius), 0.0);
             Particle potential = new Particle(
                     radius,
                     mass,
@@ -67,8 +63,7 @@ public class Input {
                     0.0,
                     0.0,
                     dt,
-                    desiredVelocity,
-                    desiredTarget
+                    desiredVelocity
             );
             if (noOverlapParticle(potential.getX(), potential.getY(), potential.getRadius())) {
                 particles.add(potential);
@@ -123,10 +118,6 @@ public class Input {
 
     public double getD() {
         return D;
-    }
-
-    public double getDt() {
-        return dt;
     }
 
     public double getCellSideLength() {

@@ -13,6 +13,22 @@ public class Vector2D {
         this.x = x;
         this.y = y;
     }
+
+    public Vector2D(int x, int y) {
+        this.x = (double)x;
+        this.y = (double)y;
+    }
+
+    public Vector2D(double x, int y) {
+        this.x = x;
+        this.y = (double)y;
+    }
+
+    public Vector2D(int x, double y) {
+        this.x = (double)x;
+        this.y = y;
+    }
+
     public Vector2D(Vector2D base){
         this.x = base.x;
         this.y = base.y;

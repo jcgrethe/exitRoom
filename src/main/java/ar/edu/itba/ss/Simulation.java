@@ -31,7 +31,7 @@ public class Simulation
     public static void simulate(String[] args){
         // Initial conditions
         //Double simulationDT = 0.1*Math.sqrt(input.getMass()/input.getKn());   //Default ; TODO: Check if there is a better one
-        double simulationDT = 5E-5;
+        double simulationDT = 1E-4;
         CommandLine cmd = getOptions(args);
 
         if(cmd.getOptionValue("n") != null){
@@ -45,7 +45,7 @@ public class Simulation
 
 
         Integer iteration = 0;
-        System.out.println("DT: "+input.getDt() + " | Print DT: " + printDT);
+        System.out.println("DT: "+ simulationDT + " | Print DT: " + printDT);
         Integrator integrator = new VelocityVerlet(simulationDT,
                 new GranularMediaForce(input.getKn(), input.getKt(), input.getW(), input.getL()),
                 input.getW(), input.getL(), input.getD()
@@ -54,9 +54,11 @@ public class Simulation
         List<Particle> particles = input.getParticles();
         Output.generateXYZFile();
 
+
+        List<Particle> toRemove = new LinkedList<>();
         //Simulation
         Grid grid = new Grid(input.getCellSideLength(),input.getW(), input.getL());
-        for (double time = 0d ; time < input.getEndTime() ; time += simulationDT, iteration++){
+        for (double time = 0d ; particles.size()>1 ; time += simulationDT, iteration++){
             grid.setParticles(input.getParticles());
 //            integrator.moveParticle();
             Map<Particle, List<Particle>> neighbours = NeighborDetection.getNeighbours(
@@ -75,16 +77,21 @@ public class Simulation
 
             particles.stream().parallel().forEach(particle -> {
                 particle.updateState();
-                if (particle.getY() < -input.getL()/10){
+                if (particle.getY() < 1){
                     //Vertical Contorn Condition
                     try {
                         updateCaudal(input,auxtime);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    particle.reset(input);  //TODO: Same velocity and X position?
+                    toRemove.add(particle);
                 }
             });
+
+            for(Particle p: toRemove){
+                //TODO: add to a file
+                particles.remove(p);
+            }
 
             if (iteration % printDT == 0){ //TODO CHECK!!
                 //Print
@@ -98,7 +105,10 @@ public class Simulation
             }
             grid.clean();
         }
+        //end simulation
     }
+
+
 
     private static void updateCaudal(Input input, double time) throws IOException {
         caudal++;

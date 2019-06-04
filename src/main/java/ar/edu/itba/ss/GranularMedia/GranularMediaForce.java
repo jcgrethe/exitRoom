@@ -18,6 +18,8 @@ public class GranularMediaForce  implements ForceFunction {
     Vector2D exitTarget;
     double A=2000;
     double B =0.08;
+    Vector2D endVector;
+
 
     public GranularMediaForce(double kn, double kt, double boxWidth, double boxHeigth) {
         Kn = kn;
@@ -25,6 +27,7 @@ public class GranularMediaForce  implements ForceFunction {
         this.boxWidth = boxWidth;
         this.boxHeigth = boxHeigth;
         this.exitTarget = new Vector2D(boxWidth/2, 3.0);
+         this.endVector = new Vector2D(boxWidth/2,0);
     }
 
     @Override
@@ -80,7 +83,7 @@ public class GranularMediaForce  implements ForceFunction {
         Vector2D drivingForceValue;
 
         if(particle.getY() < 3)
-            directionVersor = particle.getPosition().subtract(particle.getDesiredTarget());
+            directionVersor = particle.getPosition().subtract(endVector);
         else
             directionVersor = particle.getPosition().subtract(exitTarget);
         directionVersor = directionVersor.multiply(1/directionVersor.getModule());
