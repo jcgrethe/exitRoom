@@ -54,8 +54,8 @@ public class GranularMediaForce  implements ForceFunction {
             }
             //social
             double socialForceValue = A * Math.exp(overlapSize / B);
-            forceX += socialForceValue * xDistanceFraction;
-            forceY += socialForceValue * yDistanceFraction;
+            forceX += (-1d)*socialForceValue * xDistanceFraction;
+            forceY += (-1d)*socialForceValue * yDistanceFraction;
         }
         particle.setPressure(Math.abs(pressure)/(2*Math.PI*particle.getRadius()));
         force = new Vector2D(forceX,forceY);
@@ -75,17 +75,19 @@ public class GranularMediaForce  implements ForceFunction {
             System.out.println("error2");*/
 
         // Driving Force
-        Vector2D aux;
-        Vector2D drivingForceValue;
-        if(particle.getY() < 3)
-            aux = particle.getDesiredTarget().subtract(particle.getPosition());
-        else
-            aux = exitTarget.subtract(particle.getPosition());
-        aux = aux.multiply(1/aux.getModule());
-        drivingForceValue = particle.getVelocity().subtract(aux.multiply(particle.getDesiredVelocity()));
-        drivingForceValue = drivingForceValue.multiply(particle.getMass()/0.5);
+//        Vector2D aux;
+//        Vector2D drivingForceValue;
+//        if(particle.getY() < 3)
+//            aux = particle.getDesiredTarget().subtract(particle.getPosition());
+//        else
+//            aux = exitTarget.subtract(particle.getPosition());
+//        aux = aux.multiply(1/aux.getModule());
+//        drivingForceValue = particle.getVelocity().subtract(aux.multiply(particle.getDesiredVelocity()));
+//        drivingForceValue = drivingForceValue.multiply(particle.getMass()/0.5);
+//
+//        return new Vector2D(force.getX()+drivingForceValue.getX(),force.getY()+drivingForceValue.getY());
 
-        return new Vector2D(force.getX()+drivingForceValue.getX(),force.getY()+drivingForceValue.getY());
+        return force;
     }
 
 
