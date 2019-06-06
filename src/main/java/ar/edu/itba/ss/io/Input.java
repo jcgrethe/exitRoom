@@ -29,8 +29,11 @@ public class Input {
     private double totalTries = 1E6;    //TODO: Not too much?
     private double tries = 0;
 
-    private static double MAXDESIREDVELOCITY =  6.0;
-    private static double MINDESIREDVELOCITY =  0.8;
+    private static double MAXDESIREDVELOCITY =  5.0;
+    private static double MINDESIREDVELOCITY =  5.0;
+
+
+    private static double DESIREDVELOCITY = - 5.0;
 
 
     public Input(){
@@ -40,7 +43,7 @@ public class Input {
     /**
      * Empty constructor generates random inputs based in the max and min setted for each variable.
      */
-    public Input(Long quantity, double dt){
+    public Input(Long quantity, double dt, double v){
         System.out.println("[Generating Input... ");
 //        dt = 0.1*Math.sqrt(mass/Kn);
 
@@ -49,12 +52,12 @@ public class Input {
 
         this.cellSideLength = maxRadio * 4;
 
-        System.out.println("L:" + L + "; W:" + W + "; D:" + D + " ; Kt:" + Kt + " ; Kn:" + this.Kn);
+        System.out.println("L:" + L + "; W:" + W + "; D:" + D + " ; Kt:" + Kt + " ; Kn:" + this.Kn + "; Velocity:" + v);
 
         //Maximum particle quantity
         while(tries < totalTries && particles.size() < quantity ) {
             double radius = random.nextDouble(minRadio,maxRadio);
-            double desiredVelocity = - random.nextDouble(MINDESIREDVELOCITY,MAXDESIREDVELOCITY);
+            double desiredVelocity = v;
             Particle potential = new Particle(
                     radius,
                     mass,

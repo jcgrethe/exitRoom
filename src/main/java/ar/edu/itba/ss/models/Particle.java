@@ -16,6 +16,7 @@ public class Particle {
     private State currentState;
     private State futureState;
     double desiredVelocity;
+    boolean marked = false;
 
     public Particle(double radius, double mass) {
         this.id = serial_id++;
@@ -193,6 +194,14 @@ public class Particle {
 
     public double getDesiredVelocity() {
         return desiredVelocity;
+    }
+
+    public boolean isMarked() {
+        return marked;
+    }
+
+    public void mark() {
+        marked= true;
     }
 
 }

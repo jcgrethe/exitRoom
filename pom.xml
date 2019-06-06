@@ -34,8 +34,6 @@
     <groupId>com.oracle</groupId>
     <artifactId>javafx</artifactId>
     <version>2.2</version>
-    <scope>system</scope>
-    <systemPath>/opt/idea-IU-191.7141.44/jre64/lib/ext/jfxrt.jar</systemPath>
   </dependency>
     <dependency>
       <groupId>net.sf.proguard</groupId>

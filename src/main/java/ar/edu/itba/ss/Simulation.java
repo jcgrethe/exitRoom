@@ -38,8 +38,14 @@ public class Simulation
             PARTICLES = Long.parseLong(cmd.getOptionValue("n"));
         }
 
+        double v = 5.0;
 
-        Input input = new Input(PARTICLES, simulationDT);
+        if(cmd.getOptionValue("v") != null){
+            v = Double.parseDouble(cmd.getOptionValue("v"));
+        }
+
+
+        Input input = new Input(PARTICLES, simulationDT, -v);
         interactionRadio = input.getInteractionRadio();
         Integer printDT = 1000;
 
@@ -77,19 +83,20 @@ public class Simulation
 
             particles.stream().parallel().forEach(particle -> {
                 particle.updateState();
-                if (particle.getY() < 1){
-                    //Vertical Contorn Condition
+                if(particle.getY()<3 && !particle.isMarked()){
                     try {
                         updateCaudal(input,auxtime);
+                        particle.mark();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                }
+                if (particle.getY() < 1){
                     toRemove.add(particle);
                 }
             });
 
             for(Particle p: toRemove){
-                //TODO: add to a file
                 particles.remove(p);
             }
 
@@ -133,17 +140,10 @@ public class Simulation
 
         Options options = new Options();
 
-        Option beeman = new Option("d", "d", true, "d");
-        beeman.setRequired(false);
-        options.addOption(beeman);
+        Option v = new Option("v", "v", true, "velocity");
+        v.setRequired(false);
+        options.addOption(v);
 
-        Option gear = new Option("kt", "kt", true, "kt");
-        gear.setRequired(false);
-        options.addOption(gear);
-
-        Option other = new Option("kn", "kn", true, "kn");
-        other.setRequired(false);
-        options.addOption(other);
 
         Option p = new Option("n", "n", true, "n");
         p.setRequired(false);
