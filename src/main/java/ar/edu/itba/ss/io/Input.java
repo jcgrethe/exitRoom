@@ -21,7 +21,7 @@ public class Input {
     private double Kn= 1.2E5;
     private double Kt = 2.4E5;
     private final double y = 70d;
-    private final double mass = 10;
+    private final double mass = 80;
     private double endTime = 10.0;
     private double cellSideLength;
     private double interactionRadio = 0.05;
@@ -52,7 +52,7 @@ public class Input {
 
         this.cellSideLength = maxRadio * 4;
 
-        System.out.println("L:" + L + "; W:" + W + "; D:" + D + " ; Kt:" + Kt + " ; Kn:" + this.Kn + "; Velocity:" + v);
+        System.out.println("L:" + L + "; W:" + W + "; D:" + D + " ; Kt:" + Kt + " ; Kn:" + this.Kn + "; Velocity:" + v+ "; DT: " + dt);
 
         //Maximum particle quantity
         while(tries < totalTries && particles.size() < quantity ) {

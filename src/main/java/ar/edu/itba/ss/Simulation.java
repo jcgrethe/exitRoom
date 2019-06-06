@@ -31,11 +31,16 @@ public class Simulation
     public static void simulate(String[] args){
         // Initial conditions
         //Double simulationDT = 0.1*Math.sqrt(input.getMass()/input.getKn());   //Default ; TODO: Check if there is a better one
-        double simulationDT = 1E-4;
+        double simulationDT = 1E-5;
+        Double auxt= null;
         CommandLine cmd = getOptions(args);
 
         if(cmd.getOptionValue("n") != null){
             PARTICLES = Long.parseLong(cmd.getOptionValue("n"));
+        }
+
+        if(cmd.getOptionValue("t") != null){
+            auxt = Double.parseDouble(cmd.getOptionValue("t"));
         }
 
         double v = 5.0;
@@ -44,14 +49,19 @@ public class Simulation
             v = Double.parseDouble(cmd.getOptionValue("v"));
         }
 
+        Input input;
+        if(auxt!= null)
+            input = new Input(PARTICLES, auxt, -v);
+        else
+            input = new Input(PARTICLES, simulationDT, -v);
 
-        Input input = new Input(PARTICLES, simulationDT, -v);
+
         interactionRadio = input.getInteractionRadio();
         Integer printDT = 1000;
 
 
         Integer iteration = 0;
-        System.out.println("DT: "+ simulationDT + " | Print DT: " + printDT);
+        System.out.println( "Print DT: " + printDT);
         Integrator integrator = new VelocityVerlet(simulationDT,
                 new GranularMediaForce(input.getKn(), input.getKt(), input.getW(), input.getL()),
                 input.getW(), input.getL(), input.getD()
@@ -148,6 +158,10 @@ public class Simulation
         Option p = new Option("n", "n", true, "n");
         p.setRequired(false);
         options.addOption(p);
+
+        Option t = new Option("t", "t", true, "time");
+        t.setRequired(false);
+        options.addOption(t);
 
 
         CommandLineParser parser = new DefaultParser();
